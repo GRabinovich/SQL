@@ -101,3 +101,13 @@ WHERE id IN(
 )
 )
 ORDER BY id;
+
+-- Ocupados en Filmación
+SELECT actors.first_name, actors.last_name, movies.name, movies.year, COUNT(roles.role) as 'num_roles'
+FROM actors 
+JOIN roles ON actors.id = roles.actor_id
+JOIN movies ON roles.movie_id = movies.id 
+WHERE movies.year > 1990 
+GROUP BY actors.id, movies.id
+HAVING num_roles >= 5
+ORDER BY num_roles DESC ;
