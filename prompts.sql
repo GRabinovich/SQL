@@ -103,11 +103,23 @@ WHERE id IN(
 ORDER BY id;
 
 -- Ocupados en Filmación
-SELECT actors.first_name, actors.last_name, movies.name, movies.year, COUNT(roles.role) as 'num_roles'
+SELECT actors.first_name, actors.last_name, movies.name, movies.year, COUNT(distinct roles.role) as 'num_roles'
 FROM actors 
 JOIN roles ON actors.id = roles.actor_id
-JOIN movies ON roles.movie_id = movies.id 
+JOIN movies ON movies.id = roles.movie_id
 WHERE movies.year > 1990 
 GROUP BY actors.id, movies.id
 HAVING num_roles >= 5
 ORDER BY num_roles DESC ;
+
+
+SELECT movies.year, COUNT(distinct movie_id) as num_movies
+FROM movies
+INNER JOIN roles ON roles.movie_id = movies.id
+WHERE movies.id NOT IN (
+  SELECT distinct movie_id
+  FROM roles 
+  INNER JOIN actors ON roles.actor_id = actors.id
+  WHERE actors.gender = 'M'
+)
+GROUP BY movies.year;
